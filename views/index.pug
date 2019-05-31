@@ -6,21 +6,32 @@ block scripts
 block content 
   h1 FingrPrintr
   h2 The Internet's Lonliest Social Network
-  p
-    | FingrPrintr is a social network that allows you to leave notes for others with your same browser fingerprint.
+  p  FingrPrintr is a social network that places you in a chatroom with others sharing your same browser fingerprint.
   p
     | Sites like 
     a(href='https://panopticlick.eff.org/results?aat=1#fingerprintTable') panopticlick
     |  like to show you big scary results saying that your browser fingerprint is mega unique, but I just don't believe them. I think there have to be a decent number of other people like me, who
-  p
-    | 1) Live in the pacific timezone
-    | 2) Have a 15" Macbook Pro late 2016 model, with the standard graphics card that comes with that
-    | 3) Use the latest FireFox
+  ul
+    li Live in the pacific timezone
+    li Have a 15" Macbook Pro late 2016 model, with the standard graphics card that comes with that
+    li Use the latest FireFox
   p And etc. 
-  p
-    | So I devised this application, which gives each fingerprint a unique "chatroom" that other sharers of the same fingerprint can communicate in.
-  p
-    | Perhaps my theory is totally wrong and everyone will be placed in a solitary room. But perhaps it isn't, in which case we might be able to be a bit less worried about the big scary world of fingerprinting.
+  p So I devised this application, which gives each fingerprint a unique "chatroom" that other sharers of the same fingerprint can communicate in.
+  p Perhaps my theory is totally wrong and everyone will be placed in a solitary room. But perhaps it isn't, in which case we might be able to be a bit less worried about the big scary world of fingerprinting.
+  p My assigned chatrooms on my MBP are:
+  ul
+    li 
+      | Firefox 67.0: 
+      a(href='/room/0x145e279b7381d') 0x145e279b7381d
+    li 
+      | Chrome  74.0.3729.169: 
+      a(href='/room/0xcafe7beccb523') 0xcafe7beccb523
+    li
+      | Safari 12.1.1:
+      a(href='/room/0x1dde373c1119d4') 0x1dde373c1119d4
 
-  button(onclick="runFingerprint()") Enter Your Chatroom
+  p Note: Ad Blockers sometimes block these fingerprinting scripts. Fingerprinting should be fast, if it seems to hang, that could be why.
+  button.primary(onclick="runFingerprint()") Enter Your Chatroom 
   p#loading
+  p GDPR Stuff: I don't collect any PII (fingerprints are hashed before transmission and no IPs are logged). Your session will not be persisted on the server without your explicit signing of the "guestbook" or leaving a comment. In those cases, your browser fingerprint hash and a randomly generated user ID will be saved on the server. Neither of these are traceable back to you. There are no trackers on this website. (I'm not sure if any of that actually addresses any GDPR concerns, but I figure it's good to know anyways) 
+  p Note: At no point will this website fingerprint your computer without a corresponding button press. That being said, it is safe to assume a fingerprinting will occur every time you press a button on this website.

@@ -11,8 +11,9 @@ block content
    | Your codename is "
    span#codename.codename
    |" .
-  p
-    em Codenames are stored in localStorage. If that gets flushed, you'll lose your name.
+  p.
+    Codenames are randomly generated and stored in localStorage. If that gets flushed, you'll lose your name. 
+    If you choose to sign the guestbook or leave a comment, your codename will be associated with the hash of your browser fingerprint and persisted on the server.
 
   h2 Guestbook
   p The guestbook has been signed by #{numEntries} people. Make yourself one of them!

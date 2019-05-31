@@ -2,7 +2,7 @@
 
 https://fingrprintr.herokuapp.com/
 
-FingrPrintr is a social network that allows you to leave notes for others with your same browser fingerprint.
+FingrPrintr is a social network that places you in a chatroom with others sharing your same browser fingerprint.
 
 Sites like [panopticlick](https://panopticlick.eff.org/results?aat=1#fingerprintTable) like to show you big scary results saying that your browser fingerprint is mega unique, but I just don't believe them. I think there have to be a decent number of other people like me, who
 

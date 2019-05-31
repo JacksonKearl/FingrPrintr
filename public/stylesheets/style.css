@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 20px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -13,4 +13,32 @@ a {
 
 #post-chat {
   display: block;
+}
+
+#footer {
+  box-sizing: border-box;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 20px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  background-color: aliceblue;
+  width: 100%;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  padding: 15px 32px;
+  margin: 5px 0;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+button.primary {
+  background-color: #4CAF50; /* Green */
+  color: white;
 }
