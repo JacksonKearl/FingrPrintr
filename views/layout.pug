@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js')
+    script(src='/javascripts/utils.js')
+    block scripts
+  body
+    noscript#checkJS
+      p.
+        You must enable Javascript for this site to function. The scripts this site loads are all FOSS,
+        and can be audited at the following locations:
+      ul
+        li
+          a(href='https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js') fingerprint2.min.js
+          |: This is Valve's browser fingerprinting library. It is MIT Licensed and an unminified version of the source code is avialable on 
+          a(href='https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.js') cdnjs.com
+          |.
+        li
+          a(href='/javascripts/utils.js') utils.js
+          |, 
+          a(href='/javascripts/index.js') index.js
+          |, 
+          a(href='/javascripts/room.js') room.js
+          |: These are all MIT Licensed. The source repo is available on 
+          a(href='https://github.com/JacksonKearl/FingrPrintr') GitHub
+          |.
+
+    block content
+    p#error
