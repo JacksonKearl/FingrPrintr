@@ -20,17 +20,15 @@ const cyrb53 = (str) => {
 
 const hashFingerprint = (then) => {
     try {
-        Fingerprint2
+        $('error').innerText = ""
+        console.log("Starting fingerprint");
+        Fingerprint2.get({ audio: { excludeIOS11: false, timeout: 1000 } }, components => {
+            console.log("Fingerprinting complete");
+            then(hash(components))
+        })
     } catch (e) {
         $('error').innerText = "Unable to run Fingerprint2. Are you blocking 3rd party scripts? \n The file being loaded is MIT licensed and available for audit at https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.js"
     }
-
-    $('error').innerText = ""
-    console.log("Starting fingerprint");
-    Fingerprint2.get({ audio: { excludeIOS11: false, timeout: 1000 } }, components => {
-        console.log("Fingerprinting complete");
-        then(hash(components))
-    })
 }
 
 const doOnLoad = f => window.addEventListener("load", f)

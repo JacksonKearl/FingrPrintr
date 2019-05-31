@@ -6,6 +6,8 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var roomsRouter = require('./routes/rooms');
+var utils = require('./routes/utils');
+utils.cleanSlate();
 
 var app = express();
 
