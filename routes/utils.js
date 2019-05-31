@@ -37,8 +37,8 @@ module.exports = {
         await pool.query('INSERT INTO chatroom (clubname, codename, comment) VALUES ($1, $2, $3)', [clubname, codename, comment])
     },
     cleanSlate: async () => {
-        await pool.query(`DROP TABLE IF EXISTS guestbook`)
-        await pool.query(`DROP TABLE IF EXISTS chatroom`)
+        // await pool.query(`DROP TABLE IF EXISTS guestbook`)
+        // await pool.query(`DROP TABLE IF EXISTS chatroom`)
         await pool.query(`
             CREATE TABLE IF NOT EXISTS guestbook(
                 clubname VARCHAR(255) NOT NULL,

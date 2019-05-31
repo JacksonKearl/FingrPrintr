@@ -42,6 +42,9 @@ const postChat = () => {
             fingerprint: hash
         }));
 
+        // @ts-ignore
+        (document.getElementById('chatbox')).value = ''
+
         xhr.onreadystatechange = () => {
             if (xhr.readyState == XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
