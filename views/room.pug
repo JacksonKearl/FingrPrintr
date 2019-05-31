@@ -5,15 +5,14 @@ block scripts
 
 block content
   h1 Welcome to Club #{title}!
-  p All are welcome at Club #{title}, but to sign the guestbook or leave a comment, you must be a fingerprinted member.
-
+  p All are welcome at this Club, but to sign the guestbook or leave a comment, you must be a fingerprinted member.
+ 
   h3
    | Your codename is "
    span#codename.codename
    |" .
-  p.
-    Codenames are randomly generated and stored in localStorage. If that gets flushed, you'll lose your name. 
-    If you choose to sign the guestbook or leave a comment, your codename will be associated with the hash of your browser fingerprint and persisted on the server.
+  p Codenames are randomly generated and stored in localStorage. If that gets flushed, you'll lose your name and be reassigned a new one. 
+  p If you choose to sign the guestbook or leave a comment, your codename will be associated with the hash of your browser fingerprint and persisted on the server.
 
   h2 Guestbook
   p The guestbook has been signed by #{numEntries} people. Make yourself one of them!
@@ -27,5 +26,7 @@ block content
        | 
        | #{val.comment}
  
-  textarea(id="chatbox", cols="30", rows="10")
+  textarea(id="chatbox", cols="40", rows="10")
   button(id="post-chat" onclick="postChat()") Post
+
+  p Note: posts limited to 1000 characters.

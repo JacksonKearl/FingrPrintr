@@ -28,6 +28,10 @@ router.post('/:roomName/chatroom', async function (req, res, next) {
   let { codename, fingerprint, post } = req.body
   let { roomName } = req.params
 
+  post = post.trim()
+  if (post === '') { return res.status(400).end('Post body empty') }
+  if (post.length > 2000) { return res.status(400).end('Post body too long') }
+
   if (utils.hash(fingerprint) !== roomName) {
     return res.status(401).end('You do not have permission to speak in this club\'s chatroom.')
   }

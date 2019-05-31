@@ -3,7 +3,9 @@ const { Pool } = require('pg')
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: true,
-    max: 10
+    max: 15,
+    idleTimeoutMillis: 1000, // close idle clients after 1 second
+    connectionTimeoutMillis: 1000, // return an error after 1 second if connection could not be established
 })
 
 let hashCache = {}
