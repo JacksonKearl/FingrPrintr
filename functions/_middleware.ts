@@ -246,10 +246,11 @@ const middleware: PagesFunction<Env, any, Data> = async (ctx) => {
         } else {
             return next()
         }
-        const awaited = (await response)
-        data.headers.forEach(([k, v]) => awaited.headers.append(k, v))
-        const rewritten = rewriter(data.name ?? '', data.fingerprint ?? '').transform(awaited)
-        return rewritten
+
+        const rewritten = rewriter(data.name ?? '', data.fingerprint ?? '').transform(await response)
+        const copy = new Response(rewritten.body, rewritten)
+        data.headers.forEach(([k, v]) => copy.headers.append(k, v))
+        return copy
     } catch (e) {
         return new Response((e as any), { status: 500 })
     }
