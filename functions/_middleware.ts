@@ -221,33 +221,39 @@ const listMiddleware: PagesFunction<Env, any, Data> = async ({ request, env, dat
 }
 
 const middleware: PagesFunction<Env, any, Data> = async (ctx) => {
-    const { request, next, env, data } = ctx
+    try {
 
-    const url = new URL(request.url)
 
-    const cookie = Object.fromEntries((request.headers.get("cookie") ?? '').split('; ').map(e => e.split('=')))
-    data.name = cookie[usernameCookie]
-    data.fingerprint = cookie[fingerprintCookie]
+        const { request, next, env, data } = ctx
 
-    data.headers = []
+        const url = new URL(request.url)
 
-    let response: Response | Promise<Response>
+        const cookie = Object.fromEntries((request.headers.get("cookie") ?? '').split('; ').map(e => e.split('=')))
+        data.name = cookie[usernameCookie]
+        data.fingerprint = cookie[fingerprintCookie]
 
-    if (url.pathname === '/') {
-        response = indexMiddleware(ctx)
-    } else if (url.pathname.startsWith('/room')) {
-        response = roomMiddleware(ctx)
-    } else if (url.pathname.startsWith('/chat')) {
-        response = chatMiddleware(ctx)
-    } else if (url.pathname.startsWith('/list')) {
-        response = listMiddleware(ctx)
-    } else {
-        return next()
+        data.headers = []
+
+        let response: Response | Promise<Response>
+
+        if (url.pathname === '/') {
+            response = indexMiddleware(ctx)
+        } else if (url.pathname.startsWith('/room')) {
+            response = roomMiddleware(ctx)
+        } else if (url.pathname.startsWith('/chat')) {
+            response = chatMiddleware(ctx)
+        } else if (url.pathname.startsWith('/list')) {
+            response = listMiddleware(ctx)
+        } else {
+            return next()
+        }
+
+        const rewritten = rewriter(data.name ?? '', data.fingerprint ?? '').transform(await response)
+        data.headers.forEach(([k, v]) => rewritten.headers.append(k, v))
+        return rewritten
+    } catch (e) {
+        return new Response((e as any).message, { status: 500 })
     }
-
-    const rewritten = rewriter(data.name ?? '', data.fingerprint ?? '').transform(await response)
-    data.headers.forEach(([k, v]) => rewritten.headers.append(k, v))
-    return rewritten
 };
 
 export const onRequest = [middleware]
