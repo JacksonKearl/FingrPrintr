@@ -252,7 +252,7 @@ const middleware: PagesFunction<Env, any, Data> = async (ctx) => {
         data.headers.forEach(([k, v]) => rewritten.headers.append(k, v))
         return rewritten
     } catch (e) {
-        return new Response((e as any).message, { status: 500 })
+        return new Response((e as any), { status: 500 })
     }
 };
 
