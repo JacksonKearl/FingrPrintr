@@ -2,15 +2,8 @@
   "name": "fingrprintr",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
-  },
-  "dependencies": {
-    "express": "~4.16.1",
-    "morgan": "~1.9.1",
-    "pg": "^7.11.0",
-    "pug": "2.0.0-beta11"
-  },
+  "scripts": {},
+  "dependencies": {},
   "devDependencies": {
     "@cloudflare/workers-types": "^3.18.0"
   }
