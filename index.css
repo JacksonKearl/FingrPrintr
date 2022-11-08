@@ -14,6 +14,10 @@ body {
     flex-direction: column;
 }
 
+input {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 .input-line {
     margin: 10px;
 }
