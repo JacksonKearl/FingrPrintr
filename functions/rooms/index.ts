@@ -32,7 +32,7 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({ request, env
             element(element) {
                 for (const key of list!.data) {
                     const roomName = key.name.slice('all_chats_'.length)
-                    element.append(`<div class="chat"><a href="/room/${roomName}">`, { html: true })
+                    element.append(`<div class="chat"><a href="/rooms/${roomName}">`, { html: true })
                     element.append(roomName + ' (' + key.authorCount + ')', { html: false })
                     element.append('</a></div>', { html: true })
                 }
