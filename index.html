@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FingrPrintr</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .input-line {
+            margin: 10px;
+        }
+
+        #fp {
+            background-color: lightgray;
+        }
+
+        #name {
+            text-transform: capitalize;
+        }
+
+        #name:invalid {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>FingrPrintr</h1>
+    <h2>the internet's loneliest chatroom</h2>
+    <form action="room" method="post">
+        <div class="input-line">
+            Fingerprint: <input id="fp" size="34" type="text" name="fingerprint" readonly value="%FINGERPRINT%" />
+        </div>
+        <div class="input-line">
+            Display Name:
+            <input id="name" type="text" name="username" required minlength="5" maxlength="32" size="30"
+                pattern="[a-zA-Z0-9][a-zA-Z0-9 ]*" value="%USERNAME%" />
+        </div>
+        <input type="submit" value="Let's Chat!" />
+    </form>
+    <a href="/list">See all rooms</a>
+</body>
+
+<script type="module">
+    import { FingerprintJS } from './fingrprintr.js'
+
+    (async () => {
+        const fp = await FingerprintJS.getFingerprint()
+        document.getElementById('fp').value = fp
+        console.log(document.getElementById('fp').value)
+    })()
+</script>
+
+</html>
