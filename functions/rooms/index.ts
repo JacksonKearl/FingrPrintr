@@ -1,6 +1,6 @@
 import { Env, Data, Chat } from "../_middleware"
 
-export const onRequestGet: PagesFunction<Env, any, Data> = async ({ request, env, data }) => {
+export const onRequestGet: PagesFunction<Env, any, Data> = async ({ request, env }) => {
     let list = await env.CHATS.get<{ update: number; data: { name: string; authorCount: number; }[]; }>('chat_list', "json")
     if (!list) {
         const { keys } = await env.CHATS.list({ prefix: 'all_chats_' })
