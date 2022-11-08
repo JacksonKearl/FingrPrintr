@@ -231,7 +231,6 @@ const middleware: PagesFunction<Env, any, Data> = async (ctx) => {
         const cookie = Object.fromEntries((request.headers.get("cookie") ?? '').split('; ').map(e => e.split('=')))
         data.name = cookie[usernameCookie]
         data.fingerprint = cookie[fingerprintCookie]
-
         data.headers = []
 
         let response: Response | Promise<Response>
@@ -247,9 +246,9 @@ const middleware: PagesFunction<Env, any, Data> = async (ctx) => {
         } else {
             return next()
         }
-
-        const rewritten = rewriter(data.name ?? '', data.fingerprint ?? '').transform(await response)
-        data.headers.forEach(([k, v]) => rewritten.headers.append(k, v))
+        const awaited = (await response)
+        data.headers.forEach(([k, v]) => awaited.headers.append(k, v))
+        const rewritten = rewriter(data.name ?? '', data.fingerprint ?? '').transform(awaited)
         return rewritten
     } catch (e) {
         return new Response((e as any), { status: 500 })
