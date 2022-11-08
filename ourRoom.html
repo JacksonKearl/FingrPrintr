@@ -1,31 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FingrPrintr</title>
-    <style>
-        #name {
-            text-transform: capitalize;
-        }
-    </style>
-</head>
+<head></head>
 
-<body>
+<body id="ourRoom">
     <h2>Hey, it's <span id="name">%USERNAME%</span>!</h2>
-    <h5>Say hello! Everyone here is a lot like you - and if they aren't yet, they will be soon. Perhaps describe your
-        rig?
+    <h5>This is your zone. Somehow, someway, somewhere, everyone here is a lot like you.
     </h5>
-    <form method="post">
+    <main id="chats"></main>
+    <form id="prompt" method="post">
         <input style="display: none;" type="text" name="username" value="%USERNAME%" />
         <input style="display: none;" type="text" name="fingerprint" value="%FINGERPRINT%" />
-        <input type="text" maxlength="1000" name="message" placeholder="Say Something!" />
-        <input type="submit" value="Speak" />
+        <div id="message-bar">
+            <input id="text" type="text" autofocus required maxlength="1000" name="message"
+                placeholder="Say Something!" />
+            <input id="button" type="submit" value="Speak" />
+        </div>
     </form>
-    <div id="chats"></div>
-    <a href="/rooms">See all rooms</a>
 </body>
+
+<script>
+    const chats = document.getElementById('chats')
+    chats.scrollTop = chats.scrollHeight
+</script>
 
 </html>

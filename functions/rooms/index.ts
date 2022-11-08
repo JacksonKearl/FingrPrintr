@@ -1,7 +1,16 @@
-import { Env, Data, Chat } from "../_middleware"
+import { Env, Data, Chat, cyrb128 } from "../_middleware"
 
-export const onRequestGet: PagesFunction<Env, any, Data> = async ({ request, env }) => {
-    let list = await env.CHATS.get<{ update: number; data: { name: string; authorCount: number; }[]; }>('chat_list', "json")
+const TTL = 300
+
+export const onRequestGet: PagesFunction<Env, any, Data> = async ({ request, env, data }) => {
+    const url = new URL(request.url)
+    if (!data.name || !data.fingerprint) {
+        url.pathname = '/'
+        return Response.redirect(url.toString())
+    }
+    const ourRoom = cyrb128(data.fingerprint)
+
+    let list = false && await env.CHATS.get<{ update: number; data: { name: string; authorCount: number; }[]; }>('chat_list', "json")
     if (!list) {
         const { keys } = await env.CHATS.list({ prefix: 'all_chats_' })
         list = {
@@ -18,8 +27,7 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({ request, env
             ))).filter((x => x) as (x: any) => x is { name: string; authorCount: number; })
         }
         list.data.sort((a, b) => b.authorCount - a.authorCount)
-
-        env.CHATS.put('chat_list', JSON.stringify(list), { expirationTtl: 600 })
+        env.CHATS.put('chat_list', JSON.stringify(list), { expirationTtl: TTL })
     }
 
     const rewriter = new HTMLRewriter()
@@ -28,12 +36,12 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({ request, env
                 element.setInnerContent('Last updated: ' + Math.round((Date.now() - list!.update) / 1000) + ' seconds ago')
             },
         })
-        .on('div#list', {
+        .on('main#list', {
             element(element) {
                 for (const key of list!.data) {
                     const roomName = key.name.slice('all_chats_'.length)
-                    element.append(`<div class="chat"><a href="/rooms/${roomName}">`, { html: true })
-                    element.append(roomName + ' (' + key.authorCount + ')', { html: false })
+                    element.append(`<div class="chat ${roomName === ourRoom ? 'ours' : 'theirs'}"><a href="/rooms/${roomName}">`, { html: true })
+                    element.append(roomName, { html: false })
                     element.append('</a></div>', { html: true })
                 }
             },

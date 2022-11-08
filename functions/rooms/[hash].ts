@@ -7,9 +7,9 @@ export const onRequestPost: PagesFunction<Env, any, Data> = async ({ request, en
     const message = form.get('message') as string
     const roomId = cyrb128(fingerprint)
 
-    if (message.length < 1000) {
+    if (message.length && message.length < 1000) {
         const chats = (await env.CHATS.get<Chat>('all_chats_' + roomId, "json")) ?? []
-        chats.push({ author: username, text: message })
+        chats.push({ author: username, text: message, date: Date.now() })
         if (chats.length > 100) { chats.shift(); }
         // not good, potential for race conditions. but Durable Objects are expensive.
         await env.CHATS.put('all_chats_' + roomId, JSON.stringify(chats))
@@ -33,26 +33,26 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({ request, 
 
     const isOurRoom = roomId === ourRoom
 
-    const rewriter = new HTMLRewriter().on('div#chats', {
+    const rewriter = new HTMLRewriter().on('main#chats', {
         async element(element) {
             try {
                 const chats = (await env.CHATS.get<Chat>('all_chats_' + roomId, "json")) ?? []
                 if (isOurRoom) {
                     const welcomeText = 'Welcome ' + data.name + '!'
-                    if (!chats.some(c => c.text === welcomeText)) {
-                        chats.push({ author: 'root', text: welcomeText })
-
+                    if (chats.length < 20 && !chats.some(c => c.text === welcomeText)) {
+                        chats.push({ author: 'root', text: welcomeText, date: Date.now() })
                         // not good, potential for race conditions. but Durable Objects are expensive.
                         env.CHATS.put('all_chats_' + roomId, JSON.stringify(chats))
                     }
                 }
                 if (chats.length) {
-                    for (const chat of chats.reverse()) {
-                        element.append('<div class="chat">', { html: true })
+                    for (const chat of chats) {
+                        const isOurChat = chat.author === data.name && isOurRoom
+
+                        element.append(`<div title="${new Date(chat.date).toLocaleString()}" class="chat ${isOurChat ? 'ours' : 'theirs'}">`, { html: true })
                         element.append('<span class="author">', { html: true })
                         element.append(chat.author, { html: false })
                         element.append('</span>', { html: true })
-                        element.append(': ', { html: false })
                         element.append('<span class="message">', { html: true })
                         element.append(chat.text, { html: false })
                         element.append('</span>', { html: true })
@@ -60,7 +60,7 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({ request, 
                     }
                 } else {
                     element.append('<div class="chat">', { html: true })
-                    element.append('Nothing here yet!')
+                    element.append('No one here yet!')
                     element.append('</div>', { html: true })
                 }
             } catch (e) {
