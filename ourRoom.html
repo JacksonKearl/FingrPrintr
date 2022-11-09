@@ -1,27 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head></head>
 
-<head></head>
+	<body id="ourRoom">
+		<h2>Hey, it's <span id="name">%USERNAME%</span>!</h2>
+		<h5>
+			This is your zone. Somehow, someway, somewhere, everyone here is a
+			lot like you. Can you find the connection?
+		</h5>
+		<main id="chats"></main>
+		<form id="prompt" method="post">
+			<input
+				style="display: none"
+				type="text"
+				name="username"
+				value="%USERNAME%"
+			/>
+			<input
+				style="display: none"
+				type="text"
+				name="fingerprint"
+				value="%FINGERPRINT%"
+			/>
+			<div id="message-bar">
+				<input
+					id="text"
+					type="text"
+					autofocus
+					required
+					maxlength="1000"
+					name="message"
+					placeholder="Say Something!"
+				/>
+				<input id="button" type="submit" value="Speak!" />
+			</div>
+		</form>
+	</body>
 
-<body id="ourRoom">
-    <h2>Hey, it's <span id="name">%USERNAME%</span>!</h2>
-    <h5>This is your zone. Somehow, someway, somewhere, everyone here is a lot like you.
-    </h5>
-    <main id="chats"></main>
-    <form id="prompt" method="post">
-        <input style="display: none;" type="text" name="username" value="%USERNAME%" />
-        <input style="display: none;" type="text" name="fingerprint" value="%FINGERPRINT%" />
-        <div id="message-bar">
-            <input id="text" type="text" autofocus required maxlength="1000" name="message"
-                placeholder="Say Something!" />
-            <input id="button" type="submit" value="Speak" />
-        </div>
-    </form>
-</body>
-
-<script>
-    const chats = document.getElementById('chats')
-    chats.scrollTop = chats.scrollHeight
-</script>
-
+	<script>
+		const chats = document.getElementById('chats')
+		chats.scrollTop = chats.scrollHeight
+	</script>
 </html>

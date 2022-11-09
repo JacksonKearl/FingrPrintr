@@ -1,82 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head></head>
 
-<head></head>
+	<body id="index">
+		<h1>FingrPrintr</h1>
+		<h2>The Internet's Loneliest Social Network</h2>
+		<form method="post">
+			<div class="input-line">
+				Fingerprint
+				<br />
+				<input
+					id="fp"
+					size="34"
+					type="text"
+					name="fingerprint"
+					readonly
+					value="%FINGERPRINT%"
+				/>
+			</div>
+			<div class="input-line">
+				Display Name
+				<br />
+				<input
+					id="name"
+					type="text"
+					name="username"
+					required
+					minlength="5"
+					maxlength="32"
+					size="30"
+					pattern="[a-zA-Z0-9][a-zA-Z0-9 ]*"
+					value="%USERNAME%"
+				/>
+			</div>
+			<input
+				id="chatButton"
+				type="submit"
+				autofocus
+				value="Let's Chat!"
+			/>
+		</form>
+		<main>
+			<h4>What?</h4>
+			<p>
+				A social network where you chat with people who have an
+				identical
+				<a
+					target="_blank"
+					rel="noopener noreferrer"
+					href="https://www.amiunique.org/fp"
+					>browser fingerprint</a
+				>
+				to your own
+			</p>
+			<h4>Why?</h4>
+			<p>It seemed fun</p>
+			<p>
+				I wanted to try my hand at making a webapp that doesn't need
+				JavaScript but still acts dynamic (this site will still work
+				with JS disabled!)
+			</p>
+			<p>
+				I've long suspected browser fingerprints aren't as unique as
+				some sites claim (how many M1 Macbook Airs are out there? iPhone
+				12's?), perhaps this will validate that
+			</p>
+			<h4>How?</h4>
+			<p>
+				When JavaScript is enabled, fingerprinting works based on
+				<a
+					target="_blank"
+					rel="noopener noreferrer"
+					href="https://github.com/fingerprintjs/fingerprintjs"
+					>fingerprintjs's</a
+				>
+				algorithm; this measures things like your system preferences,
+				browser configuration, monitor settings, and details of your
+				video and audio chips
+			</p>
+			<p>
+				When JavaScript is disabled, fingerprinting happens exclusively
+				on the server via request headers - there are some techniques to
+				fingerprint more intensely without JavaScript, for instance via
+				CSS queries, but I have not implemented those here
+			</p>
+			<p>
+				I made some changes to make the fingerprints more stable, for
+				instance discarding timezone info and exact browser version
+				numbers
+			</p>
+		</main>
+	</body>
 
-<body id="index">
-    <h1>FingrPrintr</h1>
-    <h2>The Internet's Loneliest Social Network</h2>
-    <form method="post">
-        <div class="input-line">
-            Fingerprint
-            <br />
-            <input id="fp" size="34" type="text" name="fingerprint" readonly value="%FINGERPRINT%" />
-        </div>
-        <div class="input-line">
-            Display Name
-            <br />
-            <input id="name" type="text" name="username" required minlength="5" maxlength="32" size="30"
-                pattern="[a-zA-Z0-9][a-zA-Z0-9 ]*" value="%USERNAME%" />
-        </div>
-        <input id="chatButton" type="submit" autofocus value="Let's Chat!" />
-    </form>
-    <main>
-        <h4>What?</h4>
-        <p>A social network where you chat with people who have an identical
-            <a target="_blank" rel="noopener noreferrer" href="https://www.amiunique.org/fp">browser fingerprint</a> to
-            your own
-        </p>
-        <h4>Why?</h4>
-        <p>
-            It seemed fun
-        </p>
-        <p>
-            I wanted to try my hand at making a webapp that doesn't need JavaScript but still acts dynamic (this site
-            will still work with JS disabled!)
-        </p>
-        <p>
-            I've long suspected browser fingerprints aren't as unique as some sites claim (how many M1 Macbook Airs
-            are out there? iPhone 12's?), perhaps this will validate that
-        </p>
-        <h4>How?</h4>
-        <p>
-            When JavaScript is enabled, fingerprinting works based on <a target="_blank" rel="noopener noreferrer"
-                href="https://github.com/fingerprintjs/fingerprintjs">fingerprintjs's</a> algorithm; this measures
-            things like your system preferences, browser configuration, monitor settings, and details of your video and
-            audio chips
-        </p>
-        <p>
-            When JavaScript is disabled, fingerprinting happens exclusively on the server via request headers -
-            there are some techniques to fingerprint more intensely without JavaScript, for instance via CSS
-            queries, but I have not implemented those here
-        </p>
-        <p>
-            I made some changes to make the fingerprints more stable, for instance discarding timezone info and
-            exact browser version numbers
-        </p>
-    </main>
-</body>
+	<script type="module">
+		import { FingerprintJS } from './fingrprintr.js'
 
-<script type="module">
-    import { FingerprintJS } from './fingrprintr.js'
+		;(async () => {
+			const button = document.getElementById('chatButton')
+			const fpEl = document.getElementById('fp')
+			const browserPrint = fpEl.value
 
-    (async () => {
-        const button = document.getElementById('chatButton')
-        const fpEl = document.getElementById('fp')
-        const browserPrint = fpEl.value
+			try {
+				button.disabled = true
+				fpEl.value = 'loading...'
+				const fp = await FingerprintJS.getFingerprint()
+				fpEl.value = fp
+			} catch (e) {
+				console.error(e)
+				fpEl.value = browserPrint
+			}
 
-        try {
-            button.disabled = true
-            fpEl.value = 'loading...'
-            const fp = await FingerprintJS.getFingerprint()
-            fpEl.value = fp
-        } catch (e) {
-            console.error(e)
-            fpEl.value = browserPrint
-        }
-
-        button.disabled = false
-    })()
-</script>
-
+			button.disabled = false
+		})()
+	</script>
 </html>

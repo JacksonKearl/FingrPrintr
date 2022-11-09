@@ -1,168 +1,181 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    border-radius: 35px;
+	box-sizing: border-box;
+	margin: 0;
+	border-radius: 50px;
 }
 
 body {
-    padding: 5px;
-    text-align: center;
-    height: 100vh;
-    height: 100svh;
-    background-color: wheat;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    display: flex;
-    flex-direction: column;
+	padding: 5px;
+	text-align: center;
+	height: 100vh;
+	height: 100svh;
+	background-color: wheat;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
+		sans-serif;
+	display: flex;
+	flex-direction: column;
 }
 
 input {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 14pt;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
+		sans-serif;
+	font-size: 14pt;
+	border: 0;
+	outline-color: aquamarine;
+}
+
+input[type='submit'] {
+	background-color: aquamarine;
+	color: black;
+	border: 0;
+	padding: 5px;
+	cursor: pointer;
+}
+
+input[type='submit']:hover,
+input[type='submit']:focus-visible,
+#index input:hover,
+#index input:focus-visible {
+	filter: drop-shadow(3px 3px 4px black);
+}
+
+input:focus-visible {
+	outline-style: none;
+}
+
+input[readonly] {
+	outline: 0;
+	filter: none !important;
+	background-color: lightgray;
 }
 
 .input-line {
-    margin: 10px;
+	margin: 10px;
 }
 
-#fp {
-    background-color: lightgray;
-}
-
-#name:invalid {
-    background-color: red;
+#index input:invalid {
+	background-color: salmon;
 }
 
 footer {
-    background-color: salmon;
-    padding: 5px;
-    width: fit-content;
-    margin: 0 auto;
-    margin-top: 5px;
-    color: whitesmoke;
+	background-color: salmon;
+	padding: 5px;
+	width: fit-content;
+	margin: 0 auto;
+	margin-top: 5px;
+	color: whitesmoke;
 }
 
-footer>a {
-    color: whitesmoke;
+footer > a {
+	color: whitesmoke;
 }
 
-footer>a:hover {
-    color: aqua;
+footer > a:hover {
+	color: aquamarine;
 }
-
 
 h1,
 h2 {
-    background-color: salmon;
-    padding: 5px;
-    width: fit-content;
-    margin: 5px auto;
-    color: whitesmoke;
+	background-color: salmon;
+	padding: 5px;
+	width: fit-content;
+	margin: 5px auto;
+	color: whitesmoke;
 }
 
 h5 {
-    padding: 5px;
+	padding: 5px;
 }
 
 main {
-    flex-grow: 10;
-    overflow: scroll;
-    border: 10px solid salmon;
-    background-color: aliceblue;
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
+	flex-grow: 1000;
+	overflow: scroll;
+	border: 10px solid salmon;
+	background-color: aliceblue;
+	padding: 5px;
+	display: flex;
+	flex-direction: column;
 }
 
-main>.chat {
-    display: flex;
-    flex-direction: column;
-    border-radius: 15px;
-    padding: 5px;
-    margin: 5px;
-    background-color: antiquewhite;
+main > .chat {
+	display: flex;
+	flex-direction: column;
+	border-radius: 15px;
+	padding: 5px;
+	margin: 5px;
+	background-color: antiquewhite;
 }
 
-main>.chat.theirs {
-    align-self: flex-start;
-    align-items: flex-start;
-    background-color: lavenderblush;
+main > .chat.theirs {
+	align-self: flex-start;
+	align-items: flex-start;
+	background-color: lavenderblush;
 }
 
-main>.chat.ours {
-    align-self: flex-end;
-    align-items: flex-end;
-    background-color: lavender;
+main > .chat.ours {
+	align-self: flex-end;
+	align-items: flex-end;
+	background-color: lavender;
 }
 
-#rooms main>.chat * {
-    text-decoration: none;
-    color: unset;
+#rooms main > .chat * {
+	text-decoration: none;
+	color: unset;
 }
 
-#rooms main>.chat:hover {
-    filter: drop-shadow(2px 2px 2px);
+#rooms main > .chat:hover {
+	filter: drop-shadow(3px 3px 4px);
 }
 
-#chats>.chat>.author {
-    font-size: small;
+#chats > .chat > .author {
+	font-size: small;
 }
 
 #prompt {
-    margin: 5px;
-    margin-bottom: 0;
-    background-color: salmon;
-    padding: 10px;
+	margin: 5px 20px 0;
+	background-color: salmon;
+	padding: 10px;
 }
 
-#prompt>#message-bar {
-    width: 100%;
-    display: flex;
+#prompt > #message-bar {
+	width: 100%;
+	display: flex;
 }
 
-#prompt>#message-bar>#text {
-    margin-right: 5px;
-    padding-left: 5px;
-    flex-grow: 1;
-    border: 0;
+#prompt > #message-bar > #text {
+	margin-right: 5px;
+	padding-left: 5px;
+	flex-grow: 1;
+	border: 0;
 }
 
-#prompt>#message-bar>#text:focus {
-    margin-right: 5px;
-    padding-left: 5px;
-    flex-grow: 1;
-    border: 0;
-}
-
-input[type="submit"] {
-    background-color: aqua;
-    border: 0;
-    padding: 5px;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover {
-    filter: drop-shadow(2px 2px 2px);
+#prompt > #message-bar > #text:focus {
+	margin-right: 5px;
+	padding-left: 5px;
+	flex-grow: 1;
+	border: 0;
 }
 
 #index input {
-    text-align: center;
+	text-align: center;
+	margin: 2px;
 }
 
 #index main {
-    flex-grow: 0;
-    margin: 0 auto;
-    margin-top: 10px;
+	flex-grow: 0;
+	margin: 0 auto;
+	margin-top: 10px;
 }
 
 #index main h4 {
-    margin-top: 10px;
-    margin-bottom: 0px;
+	margin-top: 10px;
+	margin-bottom: 0px;
 }
 
 #index main p {
-    margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 .gap {
-    flex-grow: 1;
+	flex-grow: 1;
 }
