@@ -10,7 +10,7 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({ request, env
     data.fingerprint ??= cyrb128([
         request.headers.get('accept'),
         request.headers.get('accept-encoding'),
-        request.headers.get('user-agent'),
+        (request.headers.get('user-agent') ?? '').replace(/\/([.\d])[.\d]+/g, ''),
     ].join(';'))
 
     if (!data.name) {

@@ -16,6 +16,7 @@ body {
 
 input {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 14pt;
 }
 
 .input-line {
@@ -144,6 +145,21 @@ input[type="submit"]:hover {
 
 #index input {
     text-align: center;
+}
+
+#index main {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+#index main h4 {
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+#index main p {
+    margin-bottom: 5px;
 }
 
 .gap {
