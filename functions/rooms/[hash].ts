@@ -27,14 +27,10 @@ const DurableObjectChat = (room: string, env: Env) => ({
 		const partitionKey = room.slice(0, 2)
 		const id = env.CHATTERER.idFromName(partitionKey)
 		const obj = env.CHATTERER.get(id)
-		const formData = new FormData()
-
-		formData.append('author', author)
-		formData.append('message', message)
 
 		await obj.fetch('https://example.com/' + room, {
 			method: 'POST',
-			body: formData,
+			body: new URLSearchParams({ author, message }),
 			headers: new Headers({
 				'Content-Type': 'application/x-www-form-urlencoded',
 			}),

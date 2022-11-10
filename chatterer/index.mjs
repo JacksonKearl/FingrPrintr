@@ -35,16 +35,16 @@ export class Chatterer {
 			const raw = Object.fromEntries((await request.formData()).entries())
 			if (
 				!raw.author ||
-				!raw.text ||
+				!raw.message ||
 				raw.author.length > 30 ||
-				raw.text.length > 1000
+				raw.message.length > 1000
 			) {
 				return new Response('bad request.', { status: 400 })
 			}
 
 			const clean = {
 				author: raw.author,
-				text: raw.text,
+				message: raw.message,
 				date: Date.now(),
 			}
 
