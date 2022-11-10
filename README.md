@@ -64,3 +64,15 @@ Username generator comes from [Kato Richardson](https://github.com/katowulf) via
 ```
 All code belongs to the poster and no license is enforced. JSFiddle or its authors are not responsible or liable for any loss or damage of any kind during the usage of provided code.
 ```
+
+Fingerprinting script comes from: [fingerprintjs](https://github.com/fingerprintjs/fingerprintjs)
+
+```
+/**
+ * FingerprintJS v3.3.6 - Copyright (c) FingerprintJS, Inc, 2022 (https://fingerprint.com)
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
+ *
+ * This software contains code from open-source projects:
+ * MurmurHash3 by Karan Lyons (https://github.com/karanlyons/murmurHash3.js)
+ */
+```

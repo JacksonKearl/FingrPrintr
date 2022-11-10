@@ -178,18 +178,18 @@ main > .chat.ours {
 	margin: 2px;
 }
 
-#index main {
+main.text {
 	flex-grow: 0;
 	margin: 0 auto;
 	margin-top: 10px;
 }
 
-#index main h4 {
+main.text h4 {
 	margin-top: 10px;
 	margin-bottom: 0px;
 }
 
-#index main p {
+main.text p {
 	margin-bottom: 5px;
 }
 
