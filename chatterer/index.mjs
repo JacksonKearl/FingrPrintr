@@ -6,6 +6,9 @@ export default {
 
 async function handleRequest(request, env) {
 	try {
+		if (request.headers.get('token') !== env.ACCESS_TOKEN) {
+			return new Response('provide token pls', { status: 401 })
+		}
 		const url = new URL(request.url)
 		const room = url.pathname.slice(1)
 		if (!room) {
