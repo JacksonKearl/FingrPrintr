@@ -39,6 +39,15 @@ input[type='submit']:focus-visible,
 	filter: drop-shadow(3px 3px 4px black);
 }
 
+@media (hover: none) {
+	input[type='submit']:hover,
+	input[type='submit']:focus-visible,
+	#index input:hover,
+	#index input:focus-visible {
+		filter: none !important;
+	}
+}
+
 input:focus-visible {
 	outline-style: none;
 }
