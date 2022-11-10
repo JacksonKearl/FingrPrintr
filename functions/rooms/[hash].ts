@@ -117,7 +117,7 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 						message: welcomeText,
 					})
 
-					KVChat(roomId, env).post('root', welcomeText)
+					await KVChat(roomId, env).post('root', welcomeText)
 				}
 			}
 			if (chats.length) {
