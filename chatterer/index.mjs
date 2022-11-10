@@ -32,9 +32,13 @@ export class Chatterer {
 	async fetch(request) {
 		const url = new URL(request.url)
 		const room = url.pathname
-		const value = (await this.state.storage.get(room)) || []
-		if (request.method === 'DELETE') {
-			this.state.storage.delete(room)
+
+		// const dataStore = this.env.CHATS
+		const dataStore = this.state.storage
+
+		const value = JSON.parse((await dataStore.get(room)) || '[]')
+		if (request.method === 'GET') {
+			return new Response(value)
 		}
 		if (request.method === 'POST') {
 			const raw = Object.fromEntries((await request.formData()).entries())
@@ -58,9 +62,13 @@ export class Chatterer {
 				value.shift()
 			}
 
-			await this.state.storage.put(room, value)
+			const string = JSON.stringify(value)
+			await dataStore.put(room, string)
+			return new Response()
 		}
-
-		return new Response(JSON.stringify(value))
+		if (request.method === 'DELETE') {
+			dataStore.delete(room)
+			return new Response('done')
+		}
 	}
 }

@@ -86,72 +86,76 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 
 	const rewriter = new HTMLRewriter().on('main#chats', {
 		async element(element) {
-			const chats = await chatter(roomId, env).get()
+			try {
+				const chats = await chatter(roomId, env).get()
 
-			if (isOurRoom) {
-				const welcomePhrase = [
-					'Welcome',
-					'Hello',
-					'Greetings',
-					'Bonjour',
-					'Hola',
-					'Ciao',
-					'Howdy',
-					'Konnichiwa',
-					'Look what the cat dragged in...',
-					'Hiya',
-					'Aloha',
-					'Salam',
-				]
+				if (isOurRoom) {
+					const welcomePhrase = [
+						'Welcome',
+						'Hello',
+						'Greetings',
+						'Bonjour',
+						'Hola',
+						'Ciao',
+						'Howdy',
+						'Konnichiwa',
+						'Look what the cat dragged in...',
+						'Hiya',
+						'Aloha',
+						'Salam',
+					]
 
-				const welcomeText =
-					selectRandom(welcomePhrase) + ' ' + data.name + '!'
+					const welcomeText =
+						selectRandom(welcomePhrase) + ' ' + data.name + '!'
 
-				if (
-					chats.length < 20 &&
-					!chats.some(
-						(c) =>
-							c.author === 'root' &&
-							c.message?.includes(data.name),
-					)
-				) {
-					chats.push({
-						author: 'root',
-						date: Date.now(),
-						message: welcomeText,
-					})
-
-					await chatter(roomId, env).post('root', welcomeText)
-				}
-			}
-			if (chats.length) {
-				let lastAuthor: string | undefined
-				for (const chat of chats) {
-					const isOurChat = chat.author === data.name && isOurRoom
-					const dateStamp = new Date(chat.date).toLocaleString()
-					const creator = isOurChat ? 'ours' : 'theirs'
-
-					element.append(
-						`<div title="${dateStamp}" class="chat ${creator}">`,
-						{ html: true },
-					)
-					if (lastAuthor !== chat.author) {
-						lastAuthor = chat.author
-						element.append('<span class="author">', {
-							html: true,
+					if (
+						chats.length < 20 &&
+						!chats.some(
+							(c) =>
+								c.author === 'root' &&
+								c.message?.includes(data.name),
+						)
+					) {
+						chats.push({
+							author: 'root',
+							date: Date.now(),
+							message: welcomeText,
 						})
-						element.append(chat.author, { html: false })
-						element.append('</span>', { html: true })
+
+						await chatter(roomId, env).post('root', welcomeText)
 					}
-					element.append('<span class="message">', { html: true })
-					element.append(chat.message, { html: false })
-					element.append('</span>', { html: true })
+				}
+				if (chats.length) {
+					let lastAuthor: string | undefined
+					for (const chat of chats) {
+						const isOurChat = chat.author === data.name && isOurRoom
+						const dateStamp = new Date(chat.date).toLocaleString()
+						const creator = isOurChat ? 'ours' : 'theirs'
+
+						element.append(
+							`<div title="${dateStamp}" class="chat ${creator}">`,
+							{ html: true },
+						)
+						if (lastAuthor !== chat.author) {
+							lastAuthor = chat.author
+							element.append('<span class="author">', {
+								html: true,
+							})
+							element.append(chat.author, { html: false })
+							element.append('</span>', { html: true })
+						}
+						element.append('<span class="message">', { html: true })
+						element.append(chat.message, { html: false })
+						element.append('</span>', { html: true })
+						element.append('</div>', { html: true })
+					}
+				} else {
+					element.append('<div class="chat">', { html: true })
+					element.append('No one here yet!')
 					element.append('</div>', { html: true })
 				}
-			} else {
-				element.append('<div class="chat">', { html: true })
-				element.append('No one here yet!')
-				element.append('</div>', { html: true })
+			} catch (e) {
+				element.append(e.message)
 			}
 		},
 	})
