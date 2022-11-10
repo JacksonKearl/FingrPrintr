@@ -61,7 +61,7 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({
 		.on('main#list', {
 			element(element) {
 				for (const key of list!.data) {
-					const roomName = key.name.slice('all_chats_'.length)
+					const roomName = key.name.slice('chat_metadata_'.length)
 					element.append(
 						`<div class="chat ${
 							roomName === ourRoom ? 'ours' : 'theirs'
