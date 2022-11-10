@@ -21,7 +21,7 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({
 	}>('chat_list_cache', 'json')
 
 	if (!list) {
-		const { keys } = await env.CHATS.list({ prefix: 'chat_metadata_' })
+		const { keys } = await env.CHATS.list({ prefix: 'chat_metadata/' })
 		list = {
 			update: Date.now(),
 			data: coalesce(
