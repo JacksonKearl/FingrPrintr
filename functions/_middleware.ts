@@ -70,8 +70,13 @@ const rewriter = (name: string, fingerprint: string, signedIn: boolean) =>
 const middleware: PagesFunction<Env, any, Data> = async ({
 	request,
 	next,
+	env,
 	data,
 }) => {
+	if (request.url.endsWith('.ico')) {
+		return env.ASSETS.fetch(request.url)
+	}
+
 	const cookie = Object.fromEntries(
 		(request.headers.get('cookie') ?? '')
 			.split('; ')
@@ -82,11 +87,13 @@ const middleware: PagesFunction<Env, any, Data> = async ({
 	data.headers = []
 
 	const response = next()
+
 	const rewritten = rewriter(
 		data.name ?? '',
 		data.fingerprint ?? '',
 		cookie[fingerprintCookie],
 	).transform(await response)
+	console.log(rewritten)
 	const copy = new Response(rewritten.body, rewritten)
 	data.headers.forEach(([k, v]) => copy.headers.append(k, v))
 	return copy
