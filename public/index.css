@@ -108,7 +108,7 @@ main > .chat {
 	background-color: antiquewhite;
 }
 main > .chat.joined {
-	margin-top: 0;
+	margin-top: -3px;
 }
 
 main > .chat.theirs {
