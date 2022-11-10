@@ -74,7 +74,7 @@ export class Chatterer {
 
 			const string = JSON.stringify(value)
 			await dataStore.put(roomKey, string)
-			return new Response()
+			return new Response(string)
 		}
 		if (request.method === 'DELETE') {
 			dataStore.delete(roomKey)
