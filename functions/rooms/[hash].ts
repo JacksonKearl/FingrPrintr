@@ -41,7 +41,7 @@ const DurableObjectChat = (room: string, env: Env) => ({
 			numMessages: data.length,
 			numAuthors: data.reduce((p, c) => p.add(c.author), new Set()).size,
 		}
-		env.CHATS.put('chat_metadata_' + room, JSON.stringify(metadata))
+		await env.CHATS.put('chat_metadata/' + room, JSON.stringify(metadata))
 	},
 })
 
