@@ -10,6 +10,26 @@ So I devised this application, which gives each fingerprint a unique "chatroom" 
 
 Either way, see it in action at: https://fingrprintr.pages.dev/
 
+## Previously Answered Questions
+
+### What tech stack is used?
+
+The site is served with Cloudflare Pages. All rendering happens server-side via Pages Functions in order to support environments without JavaScript. Chat data is stored in Cloudflare KV and Durable Objects are used for serialization.
+
+### The same page is showing different chats on different browsers?
+
+Access to your own page is serialized via Durable Objects for atomicity/consistency/durability. These Objects exist in only a single data center worldwide, and will write to their local KV deployment. On the other hand, access to pages besides your own reads from your nearest KV deployment, which may be temporarily behind the one where the Object is located. This is done for increased rendering speed and reduced load on the Durable Objects.
+
+The deployments should become consistent ["eventually"](https://en.wikipedia.org/wiki/Eventual_consistency).
+
+### How does fingerprinting with JS work?
+
+The [`public/fingrprintr.js`](public/fingrprintr.js) script is derived from [fingerprintjs](https://github.com/fingerprintjs/fingerprintjs) (formerly Valve's `fingerprintjs2`), with care taken to remove noisy information like timezone and browser version. I've added portions to the script that seem to have been removed since it's Valve days, such as webgl and user agent fingerprinting.
+
+### How does fingerprinting without JS work?
+
+The `accept`, `accept-encoding`, and `user-agent` strings are hashed, with care taken to remove noisy version information from the user agent. See [`functions/index.ts`](functions/index.ts) for more info.
+
 ## Third Party Contributions
 
 Favicon comes from [Material Design Icons](https://materialdesignicons.com/):
