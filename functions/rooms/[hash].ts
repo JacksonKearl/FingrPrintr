@@ -43,6 +43,8 @@ const DurableObjectChat = (room: string, env: Env) => ({
 	},
 })
 
+const chatter = DurableObjectChat
+
 export const onRequestPost: PagesFunction<Env, any, Data> = async ({
 	request,
 	env,
@@ -54,7 +56,7 @@ export const onRequestPost: PagesFunction<Env, any, Data> = async ({
 	const roomId = cyrb128(fingerprint)
 
 	if (message.length && message.length < 1000) {
-		await KVChat(roomId, env).post(username, message)
+		await chatter(roomId, env).post(username, message)
 	}
 
 	const url = new URL(request.url)
@@ -82,7 +84,7 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 
 	const rewriter = new HTMLRewriter().on('main#chats', {
 		async element(element) {
-			const chats = await KVChat(roomId, env).get()
+			const chats = await chatter(roomId, env).get()
 
 			if (isOurRoom) {
 				const welcomePhrase = [
@@ -117,7 +119,7 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 						message: welcomeText,
 					})
 
-					await KVChat(roomId, env).post('root', welcomeText)
+					await chatter(roomId, env).post('root', welcomeText)
 				}
 			}
 			if (chats.length) {
