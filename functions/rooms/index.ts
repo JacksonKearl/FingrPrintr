@@ -45,7 +45,9 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({
 		}
 
 		list.data.sort((a, b) => b.sortKey - a.sortKey)
-		env.CHATS.put('chat_list', JSON.stringify(list), { expirationTtl: TTL })
+		env.CHATS.put('chat_list_cache', JSON.stringify(list), {
+			expirationTtl: TTL,
+		})
 	}
 
 	const rewriter = new HTMLRewriter()
