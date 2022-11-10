@@ -155,7 +155,7 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 					element.append('</div>', { html: true })
 				}
 			} catch (e) {
-				element.append(e.message)
+				element.append((e as any).message)
 			}
 		},
 	})
