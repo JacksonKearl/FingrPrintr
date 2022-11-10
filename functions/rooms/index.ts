@@ -1,5 +1,5 @@
 import { coalesce, cyrb128 } from '../../lib/utils'
-import { Env, Data, Chat } from '../_middleware'
+import { Env, Data, Chat, ChatMetadata } from '../_middleware'
 
 const TTL = 300
 
@@ -18,24 +18,24 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({
 	let list = await env.CHATS.get<{
 		update: number
 		data: { name: string; sortKey: number }[]
-	}>('chat_list', 'json')
+	}>('chat_list_cache', 'json')
+
 	if (!list) {
-		const { keys } = await env.CHATS.list({ prefix: 'all_chats_' })
+		const { keys } = await env.CHATS.list({ prefix: 'chat_metadata_' })
 		list = {
 			update: Date.now(),
 			data: coalesce(
 				await Promise.all(
 					keys.map((key) =>
-						env.CHATS.get<Chat>(key.name, 'json')
+						env.CHATS.get<ChatMetadata>(key.name, 'json')
 							.then((chat) => {
 								if (!chat) return undefined
-								const authorSet = new Set()
-								chat.forEach((message) =>
-									authorSet.add(message.author),
-								)
 								return {
 									name: key.name,
-									sortKey: authorSet.size + chat.length / 5,
+									sortKey:
+										chat.lastUpdate / (1000 * 60 * 60) +
+										chat.numMessages +
+										chat.numAuthors * 5,
 								}
 							})
 							.catch(() => undefined),
@@ -43,6 +43,7 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({
 				),
 			),
 		}
+
 		list.data.sort((a, b) => b.sortKey - a.sortKey)
 		env.CHATS.put('chat_list', JSON.stringify(list), { expirationTtl: TTL })
 	}

@@ -1,6 +1,11 @@
 export const usernameCookie = 'name'
 export const fingerprintCookie = 'fingerprint'
 
+export type ChatMetadata = {
+	lastUpdate: number
+	numAuthors: number
+	numMessages: number
+}
 export type Chat = { author: string; message: string; date: number }[]
 export type Env = { CHATS: KVNamespace; CHATTERER: DurableObjectNamespace }
 export type Data = {

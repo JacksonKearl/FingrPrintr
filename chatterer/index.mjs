@@ -30,7 +30,9 @@ export class Chatterer {
 		const url = new URL(request.url)
 		const room = url.pathname
 		const value = (await this.state.storage.get(room)) || []
-
+		if (request.method === 'DELETE') {
+			this.state.storage.delete(room)
+		}
 		if (request.method === 'POST') {
 			const raw = Object.fromEntries((await request.formData()).entries())
 			if (
