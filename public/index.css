@@ -124,12 +124,14 @@ main > .chat.theirs {
 	align-self: flex-start;
 	align-items: flex-start;
 	background-color: lavenderblush;
+	text-align: left;
 }
 
 main > .chat.ours {
 	align-self: flex-end;
 	align-items: flex-end;
 	background-color: lavender;
+	text-align: right;
 }
 
 #rooms main > .chat * {
