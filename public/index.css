@@ -107,6 +107,9 @@ main > .chat {
 	margin: 5px;
 	background-color: antiquewhite;
 }
+main > .chat.joined {
+	margin-top: 0;
+}
 
 main > .chat.theirs {
 	align-self: flex-start;

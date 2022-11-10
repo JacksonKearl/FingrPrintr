@@ -85,7 +85,7 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 	const isOurRoom = roomId === ourRoom
 
 	const rewriter = new HTMLRewriter().on('main#chats', {
-		async element(element) {
+		async element(e) {
 			try {
 				const chats = await chatter(roomId, env).get()
 
@@ -130,32 +130,35 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 					for (const chat of chats) {
 						const isOurChat = chat.author === data.name && isOurRoom
 						const dateStamp = new Date(chat.date).toLocaleString()
-						const creator = isOurChat ? 'ours' : 'theirs'
+						const creatorClass = isOurChat ? 'ours' : 'theirs'
+						const isSameAuthor = chat.author === lastAuthor
+						const sameAuthorClass = isSameAuthor ? 'joined' : ''
+						if (!isSameAuthor) {
+							lastAuthor = chat.author
+						}
 
-						element.append(
-							`<div title="${dateStamp}" class="chat ${creator}">`,
+						const classes = `chat ${creatorClass} ${sameAuthorClass}`
+						e.append(
+							`<div title="${dateStamp}" class="${classes}">`,
 							{ html: true },
 						)
-						if (lastAuthor !== chat.author) {
-							lastAuthor = chat.author
-							element.append('<span class="author">', {
-								html: true,
-							})
-							element.append(chat.author, { html: false })
-							element.append('</span>', { html: true })
+						if (!isSameAuthor) {
+							e.append('<span class="author">', { html: true })
+							e.append(chat.author, { html: false })
+							e.append('</span>', { html: true })
 						}
-						element.append('<span class="message">', { html: true })
-						element.append(chat.message, { html: false })
-						element.append('</span>', { html: true })
-						element.append('</div>', { html: true })
+						e.append('<span class="message">', { html: true })
+						e.append(chat.message, { html: false })
+						e.append('</span>', { html: true })
+						e.append('</div>', { html: true })
 					}
 				} else {
-					element.append('<div class="chat">', { html: true })
-					element.append('No one here yet!')
-					element.append('</div>', { html: true })
+					e.append('<div class="chat">', { html: true })
+					e.append('No one here yet!')
+					e.append('</div>', { html: true })
 				}
-			} catch (e) {
-				element.append((e as any).message)
+			} catch (err) {
+				e.append((err as any).message)
 			}
 		},
 	})
