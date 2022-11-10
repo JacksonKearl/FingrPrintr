@@ -31,14 +31,24 @@ export class Chatterer {
 
 	async fetch(request) {
 		const url = new URL(request.url)
-		const room = url.pathname
+		const roomKey = 'chat_contents' + url.pathname
 
-		// const dataStore = this.env.CHATS
-		const dataStore = this.state.storage
+		const dataStore = this.env.CHATS
+		// const dataStore = this.state.storage
+		let value = []
 
-		const value = JSON.parse((await dataStore.get(room)) || '[]')
+		try {
+			const existing = await dataStore.get(roomKey)
+			if (existing) {
+				value = JSON.parse(existing)
+			}
+		} catch (e) {
+			console.error(e)
+			await dataStore.delete(roomKey)
+		}
+
 		if (request.method === 'GET') {
-			return new Response(value)
+			return new Response(JSON.stringify(value))
 		}
 		if (request.method === 'POST') {
 			const raw = Object.fromEntries((await request.formData()).entries())
@@ -63,11 +73,11 @@ export class Chatterer {
 			}
 
 			const string = JSON.stringify(value)
-			await dataStore.put(room, string)
+			await dataStore.put(roomKey, string)
 			return new Response()
 		}
 		if (request.method === 'DELETE') {
-			dataStore.delete(room)
+			dataStore.delete(roomKey)
 			return new Response('done')
 		}
 	}
