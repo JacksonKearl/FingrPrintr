@@ -1,6 +1,49 @@
 import { cyrb128, selectRandom } from '../../lib/utils'
 import { Chat, Data, Env } from '../_middleware'
 
+const KVChat = (room: string, env: Env) => ({
+	async get() {
+		return (await env.CHATS.get<Chat>('all_chats_' + room, 'json')) || []
+	},
+	async post(author: string, message: string) {
+		const chats = await this.get()
+		chats.push({ author, message, date: Date.now() })
+		if (chats.length > 100) {
+			chats.shift()
+		}
+		// not good, potential for race conditions. but Durable Objects are expensive.
+		await env.CHATS.put('all_chats_' + room, JSON.stringify(chats))
+	},
+})
+
+const DurableObjectChat = (room: string, env: Env) => ({
+	async get() {
+		const partitionKey = room.slice(0, 2)
+		const id = env.CHATTERER.idFromName(partitionKey)
+		const obj = env.CHATTERER.get(id)
+		const response = await obj.fetch('https://example.com/' + room)
+		return response.json()
+	},
+	async post(author: string, message: string) {
+		const partitionKey = room.slice(0, 2)
+		const id = env.CHATTERER.idFromName(partitionKey)
+		const obj = env.CHATTERER.get(id)
+		const formData = new FormData()
+
+		formData.append('author', author)
+		formData.append('message', message)
+
+		const response = await obj.fetch('https://example.com/' + room, {
+			method: 'POST',
+			body: formData,
+			headers: new Headers({
+				'Content-Type': 'application/x-www-form-urlencoded',
+			}),
+		})
+		return response.json()
+	},
+})
+
 export const onRequestPost: PagesFunction<Env, any, Data> = async ({
 	request,
 	env,
@@ -12,14 +55,7 @@ export const onRequestPost: PagesFunction<Env, any, Data> = async ({
 	const roomId = cyrb128(fingerprint)
 
 	if (message.length && message.length < 1000) {
-		const chats =
-			(await env.CHATS.get<Chat>('all_chats_' + roomId, 'json')) ?? []
-		chats.push({ author: username, text: message, date: Date.now() })
-		if (chats.length > 100) {
-			chats.shift()
-		}
-		// not good, potential for race conditions. but Durable Objects are expensive.
-		await env.CHATS.put('all_chats_' + roomId, JSON.stringify(chats))
+		await KVChat(roomId, env).post(username, message)
 	}
 
 	const url = new URL(request.url)
@@ -41,17 +77,16 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 	}
 
 	const ourRoom = cyrb128(data.fingerprint)
-	const roomId = params.hash
+	const roomId = params.hash.toString()
 
 	const isOurRoom = roomId === ourRoom
 
 	const rewriter = new HTMLRewriter().on('main#chats', {
 		async element(element) {
-			const chats =
-				(await env.CHATS.get<Chat>('all_chats_' + roomId, 'json')) ?? []
+			const chats = await KVChat(roomId, env).get()
 
 			if (isOurRoom) {
-				const welcomeWord = [
+				const welcomePhrase = [
 					'Welcome',
 					'Hello',
 					'Greetings',
@@ -67,22 +102,23 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 				]
 
 				const welcomeText =
-					selectRandom(welcomeWord) + ' ' + data.name + '!'
+					selectRandom(welcomePhrase) + ' ' + data.name + '!'
 
 				if (
 					chats.length < 20 &&
 					!chats.some(
 						(c) =>
-							c.author === 'root' && c.text.includes(data.name),
+							c.author === 'root' &&
+							c.message.includes(data.name),
 					)
 				) {
 					chats.push({
 						author: 'root',
-						text: welcomeText,
 						date: Date.now(),
+						message: welcomeText,
 					})
-					// not good, potential for race conditions. but Durable Objects are expensive.
-					env.CHATS.put('all_chats_' + roomId, JSON.stringify(chats))
+
+					KVChat(roomId, env).post('root', welcomeText)
 				}
 			}
 			if (chats.length) {
@@ -105,7 +141,7 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 						element.append('</span>', { html: true })
 					}
 					element.append('<span class="message">', { html: true })
-					element.append(chat.text, { html: false })
+					element.append(chat.message, { html: false })
 					element.append('</span>', { html: true })
 					element.append('</div>', { html: true })
 				}

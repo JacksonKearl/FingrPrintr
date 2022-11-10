@@ -1,0 +1,14 @@
+name = "fingrprintr-chatterer"
+main = "./index.mjs"
+compatibility_date = "2022-09-08"
+
+[durable_objects]
+bindings = [{name = "CHATTERER", class_name = "Chatterer"}]
+
+kv_namespaces = [
+  { binding = "CHATS", id = "428e70a1b23744efa181646df43753a9" }
+]
+
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["Chatterer"]
