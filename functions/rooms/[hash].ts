@@ -1,9 +1,16 @@
 import { cyrb128, selectRandom } from '../../lib/utils'
 import { Chat, ChatMetadata, Data, Env } from '../_middleware'
 
+// Pure KV doesn't have consistency guarantees,
+// this means theres potential to lose chats if two writes requests interleave or
+// hit different data centers. use durable object chat instead if that matters.
+
+// but, durable objects are slow and expensive. use kv directly when not writing
 const KVChat = (room: string, env: Env) => ({
 	async get() {
-		return (await env.CHATS.get<Chat>('all_chats_' + room, 'json')) || []
+		return (
+			(await env.CHATS.get<Chat>('chat_contents/' + room, 'json')) || []
+		)
 	},
 	async post(author: string, message: string) {
 		const chats = await this.get()
@@ -11,7 +18,7 @@ const KVChat = (room: string, env: Env) => ({
 		if (chats.length > 100) {
 			chats.shift()
 		}
-		await env.CHATS.put('all_chats_' + room, JSON.stringify(chats))
+		await env.CHATS.put('chat_contents/' + room, JSON.stringify(chats))
 	},
 })
 
@@ -87,7 +94,10 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 	const rewriter = new HTMLRewriter().on('main#chats', {
 		async element(e) {
 			try {
-				const chats = await chatter(roomId, env).get()
+				// don't touch durable object store
+				const chats = isOurRoom
+					? await chatter(roomId, env).get()
+					: await KVChat(roomId, env).get()
 
 				if (isOurRoom) {
 					const welcomePhrase = [

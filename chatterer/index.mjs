@@ -37,48 +37,57 @@ export class Chatterer {
 		// const dataStore = this.state.storage
 		let value = []
 
-		try {
-			const existing = await dataStore.get(roomKey)
-			if (existing) {
-				value = JSON.parse(existing)
-			}
-		} catch (e) {
-			console.error(e)
-			await dataStore.delete(roomKey)
-		}
+		const invoker = (task) =>
+			request.method === 'POST'
+				? task()
+				: this.state.blockConcurrencyWhile(task)
 
-		if (request.method === 'GET') {
-			return new Response(JSON.stringify(value))
-		}
-		if (request.method === 'POST') {
-			const raw = Object.fromEntries((await request.formData()).entries())
-			if (
-				!raw.author ||
-				!raw.message ||
-				raw.author.length > 30 ||
-				raw.message.length > 1000
-			) {
-				return new Response('bad request.', { status: 400 })
+		return invoker(async () => {
+			try {
+				const existing = await dataStore.get(roomKey)
+				if (existing) {
+					value = JSON.parse(existing)
+				}
+			} catch (e) {
+				console.error(e)
+				await dataStore.delete(roomKey)
 			}
 
-			const clean = {
-				author: raw.author,
-				message: raw.message,
-				date: Date.now(),
+			if (request.method === 'GET') {
+				return new Response(JSON.stringify(value))
 			}
+			if (request.method === 'POST') {
+				const raw = Object.fromEntries(
+					(await request.formData()).entries(),
+				)
+				if (
+					!raw.author ||
+					!raw.message ||
+					raw.author.length > 30 ||
+					raw.message.length > 1000
+				) {
+					return new Response('bad request.', { status: 400 })
+				}
 
-			value.push(clean)
-			if (value.length > 100) {
-				value.shift()
+				const clean = {
+					author: raw.author,
+					message: raw.message,
+					date: Date.now(),
+				}
+
+				value.push(clean)
+				if (value.length > 100) {
+					value.shift()
+				}
+
+				const string = JSON.stringify(value)
+				await dataStore.put(roomKey, string)
+				return new Response(string)
 			}
-
-			const string = JSON.stringify(value)
-			await dataStore.put(roomKey, string)
-			return new Response(string)
-		}
-		if (request.method === 'DELETE') {
-			dataStore.delete(roomKey)
-			return new Response('done')
-		}
+			if (request.method === 'DELETE') {
+				dataStore.delete(roomKey)
+				return new Response('done')
+			}
+		})
 	}
 }
