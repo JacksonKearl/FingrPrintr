@@ -1,4 +1,4 @@
-import { cyrb128, selectRandom } from '../../lib/utils'
+import { ago, cyrb128, selectRandom } from '../../lib/utils'
 import { Chat, ChatMetadata, Data, Env } from '../_middleware'
 
 // Pure KV doesn't have consistency guarantees,
@@ -139,7 +139,7 @@ export const onRequestGet: PagesFunction<Env, 'hash', Data> = async ({
 					let lastAuthor: string | undefined
 					for (const chat of chats) {
 						const isOurChat = chat.author === data.name && isOurRoom
-						const dateStamp = new Date(chat.date).toLocaleString()
+						const dateStamp = ago(chat.date)
 						const creatorClass = isOurChat ? 'ours' : 'theirs'
 						const isSameAuthor = chat.author === lastAuthor
 						const sameAuthorClass = isSameAuthor ? 'joined' : ''

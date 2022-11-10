@@ -225,3 +225,25 @@ export const cyrb128 = (str: string) => {
 
 export const coalesce = <T>(arr: (T | undefined)[]): T[] =>
 	arr.filter((v): v is T => v !== undefined)
+
+export const ago = (d: number): string => {
+	const time = [
+		[1000, 's'],
+		[60, 'm'],
+		[60, 'h'],
+		[24, 'd'],
+		[7, 'w'],
+		[52, 'y'],
+	] as const
+
+	let message = ''
+	let delta = Date.now() - d
+	for (const [frac, sym] of time) {
+		delta /= frac
+		if (delta < 1) {
+			break
+		}
+		message = `${Math.round(delta)}${sym} ago`
+	}
+	return message
+}
