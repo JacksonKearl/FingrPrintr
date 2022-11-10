@@ -93,7 +93,6 @@ const middleware: PagesFunction<Env, any, Data> = async ({
 		data.fingerprint ?? '',
 		cookie[fingerprintCookie],
 	).transform(await response)
-	console.log(rewritten)
 	const copy = new Response(rewritten.body, rewritten)
 	data.headers.forEach(([k, v]) => copy.headers.append(k, v))
 	return copy
