@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head></head>
+
+	<body id="index">
+		<main class="text"></main>
+	</body>
+
+	<script type="module">
+		import { FingerprintJS } from './fingrprintr.js'
+		const main = document.querySelector('main')
+		;(async () => {
+			try {
+				let last = undefined
+				let fp = undefined
+				// await new Promise((c) => setTimeout(c, 500))
+				const seen = new Set()
+				while (true) {
+					last = fp
+					fp = await FingerprintJS.getComponents()
+					const hash = FingerprintJS.murmurX64Hash128(
+						FingerprintJS.componentsToCanonicalString(fp),
+					)
+					if (!seen.has(hash)) {
+						seen.add(hash)
+						const ss = document.createElement('summary')
+						const dd = document.createElement('details')
+						ss.innerText = hash
+						dd.appendChild(ss)
+						main.appendChild(dd)
+
+						for (const [key, { value }] of Object.entries(fp)) {
+							const strung = JSON.stringify({ key, value })
+							const cacheKey =
+								FingerprintJS.murmurX64Hash128(strung)
+							if (!seen.has(cacheKey)) {
+								seen.add(cacheKey)
+
+								const s = document.createElement('summary')
+								const d = document.createElement('details')
+								let serialized =
+									JSON.stringify(value) ?? 'undefined'
+								if (serialized.length > 1000) {
+									serialized =
+										FingerprintJS.murmurX64Hash128(
+											serialized,
+										)
+								}
+								d.innerText = serialized
+								s.innerText = key
+								d.appendChild(s)
+								dd.appendChild(d)
+							}
+						}
+					}
+					await new Promise((c) => setTimeout(c, 100))
+				}
+			} catch (e) {
+				console.error(e)
+			}
+		})()
+	</script>
+</html>

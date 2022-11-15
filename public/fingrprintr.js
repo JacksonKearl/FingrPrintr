@@ -3056,6 +3056,7 @@ export const FingerprintJS = (function (exports) {
 	/** Not documented, out of Semantic Versioning, usage is at your own risk */
 	const murmurX64Hash128 = x64hash128
 
+	exports.componentsToCanonicalString = componentsToCanonicalString
 	exports.componentsToDebugString = componentsToDebugString
 	exports['default'] = index
 	exports.getFullscreenElement = getFullscreenElement
@@ -3077,6 +3078,9 @@ export const FingerprintJS = (function (exports) {
 
 	exports.getFingerprint = async () => {
 		return (await (await index.load()).get()).visitorId
+	}
+	exports.getComponents = async () => {
+		return (await (await index.load()).get()).components
 	}
 
 	Object.defineProperty(exports, '__esModule', { value: true })
