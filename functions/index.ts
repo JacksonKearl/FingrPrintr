@@ -1,6 +1,8 @@
 import { Env, Data, usernameCookie, fingerprintCookie } from './_middleware'
 import { randomName, cyrb128 } from '../lib/utils'
 
+const cookieSuffix = `; path=/; Max-Age=${60 * 60 * 24 * 360}; Secure`
+
 export const onRequestGet: PagesFunction<Env, any, Data> = async ({
 	request,
 	env,
@@ -27,7 +29,7 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({
 		data.name = randomName()
 		data.headers.push([
 			'Set-Cookie',
-			`${usernameCookie}=${data.name}; path=/`,
+			`${usernameCookie}=${data.name}${cookieSuffix}`,
 		])
 	}
 
@@ -42,10 +44,13 @@ export const onRequestPost: PagesFunction<Env, any, Data> = async ({
 	const fingerprint = form.get('fingerprint') as string
 	const username = form.get('username') as string
 
-	data.headers.push(['Set-Cookie', `${usernameCookie}=${username}; path=/`])
 	data.headers.push([
 		'Set-Cookie',
-		`${fingerprintCookie}=${fingerprint}; path=/`,
+		`${usernameCookie}=${username}${cookieSuffix}`,
+	])
+	data.headers.push([
+		'Set-Cookie',
+		`${fingerprintCookie}=${fingerprint}${cookieSuffix}`,
 	])
 
 	const url = new URL(request.url)

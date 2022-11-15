@@ -98,11 +98,18 @@
 			const button = document.getElementById('chatButton')
 			const fpEl = document.getElementById('fp')
 			const browserPrint = fpEl.value
-
 			try {
 				button.disabled = true
 				fpEl.value = 'loading...'
-				const fp = await FingerprintJS.getFingerprint()
+
+				let last = undefined
+				let fp = undefined
+				await new Promise((c) => setTimeout(c, 500))
+				do {
+					last = fp
+					fp = await FingerprintJS.getFingerprint()
+					await new Promise((c) => setTimeout(c, 500))
+				} while (fp !== last)
 				fpEl.value = fp
 			} catch (e) {
 				console.error(e)
