@@ -55,6 +55,7 @@ export const onRequestGet: PagesFunction<Env, any, Data> = async ({
 		)
 
 		list.data = [...list.data, ...updates]
+		list.update = Date.now()
 		list.data.sort((a, b) => b.sortKey - a.sortKey)
 		await env.CHATS.put('chat_list_cache', JSON.stringify(list))
 		return list
