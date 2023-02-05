@@ -7,7 +7,7 @@ export type ChatMetadata = {
 	numMessages: number
 }
 export type Chat = { author: string; message: string; date: number }[]
-export type Env = { CHATS: KVNamespace; CHATTERER: DurableObjectNamespace }
+export type Env = { CHATS: KVNamespace /*CHATTERER: DurableObjectNamespace*/ }
 export type Data = {
 	name: string
 	fingerprint: string

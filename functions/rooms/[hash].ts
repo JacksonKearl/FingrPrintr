@@ -22,37 +22,37 @@ const KVChat = (room: string, env: Env) => ({
 	},
 })
 
-const DurableObjectChat = (room: string, env: Env) => ({
-	async get() {
-		const partitionKey = room.slice(0, 2)
-		const id = env.CHATTERER.idFromName(partitionKey)
-		const obj = env.CHATTERER.get(id)
-		const response = await obj.fetch('https://example.com/' + room)
-		return (await response.json()) as Chat
-	},
-	async post(author: string, message: string) {
-		const partitionKey = room.slice(0, 2)
-		const id = env.CHATTERER.idFromName(partitionKey)
-		const obj = env.CHATTERER.get(id)
+// const DurableObjectChat = (room: string, env: Env) => ({
+// 	async get() {
+// 		const partitionKey = room.slice(0, 2)
+// 		const id = env.CHATTERER.idFromName(partitionKey)
+// 		const obj = env.CHATTERER.get(id)
+// 		const response = await obj.fetch('https://example.com/' + room)
+// 		return (await response.json()) as Chat
+// 	},
+// 	async post(author: string, message: string) {
+// 		const partitionKey = room.slice(0, 2)
+// 		const id = env.CHATTERER.idFromName(partitionKey)
+// 		const obj = env.CHATTERER.get(id)
 
-		const response = await obj.fetch('https://example.com/' + room, {
-			method: 'POST',
-			body: new URLSearchParams({ author, message }),
-			headers: new Headers({
-				'Content-Type': 'application/x-www-form-urlencoded',
-			}),
-		})
-		const data = await response.json<Chat>()
-		const metadata: ChatMetadata = {
-			lastUpdate: data[data.length - 1].date,
-			numMessages: data.length,
-			numAuthors: data.reduce((p, c) => p.add(c.author), new Set()).size,
-		}
-		await env.CHATS.put('chat_metadata/' + room, JSON.stringify(metadata))
-	},
-})
+// 		const response = await obj.fetch('https://example.com/' + room, {
+// 			method: 'POST',
+// 			body: new URLSearchParams({ author, message }),
+// 			headers: new Headers({
+// 				'Content-Type': 'application/x-www-form-urlencoded',
+// 			}),
+// 		})
+// 		const data = await response.json<Chat>()
+// 		const metadata: ChatMetadata = {
+// 			lastUpdate: data[data.length - 1].date,
+// 			numMessages: data.length,
+// 			numAuthors: data.reduce((p, c) => p.add(c.author), new Set()).size,
+// 		}
+// 		await env.CHATS.put('chat_metadata/' + room, JSON.stringify(metadata))
+// 	},
+// })
 
-const chatter = DurableObjectChat
+const chatter = KVChat
 
 export const onRequestPost: PagesFunction<Env, any, Data> = async ({
 	request,
